@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Start CSS -->
+    <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/index.css" rel="stylesheet">
+    <!-- End CSS -->
+
+    <!-- Start JS -->
+    <script src="/lib/angular/angular.min.js"></script>
+    <script src="/js/lib/jquery.js"></script>
+    <script src="/lib/angular/angular-cookies.js"></script>
+    <script src="/js/controller/profileCtr.js"></script>
+    <script src="/lib/@popperjs/core/dist/umd/popper.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+</head>
+<body ng-app="myApp">
+    <!-- -------------------------------------------------- -->
+    <!--                       Header                       -->
+    <!-- -------------------------------------------------- -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark customHeader" ng-controller="headerCtr">
+        <a class="navbar-brand" href="/" style="margin-left: 50px;">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerMenu" aria-controls="headerMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="headerMenu">
+            <ul class="navbar-nav" >
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Trang chủ</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="headerCategoryMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Thể loại
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="headerCategoryMenu">
+                        <a class="dropdown-item" href="/category">Tất cả</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" ng-repeat="cate in header.categories" href="/category/{{cate.id}}">{{cate.name}} ({{cate.count}})</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="headerAuthorMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Tác giả
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="headerAuthorMenu">
+                        <a class="dropdown-item" href="/author">Tất cả</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" ng-repeat="auth in header.authors" href="/author/{{auth.id}}">{{auth.name}} ({{auth.count}})</a>
+                    </div>
+                </li>
+                <li class="nav-item" ng-show="key=='' ||key== undefined">
+                    <a class="nav-link" href="/login">Đăng nhập</a>
+                </li>
+                <li class="nav-item" ng-hide="key=='' ||key== undefined">
+                    <a class="nav-link" href="/profile">Trang các nhân</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <!-- -------------------------------------------------- -->
+    <!--            Sửa thông tin tài khoản                 -->
+    <!-- -------------------------------------------------- -->
+
+    <div class="row" ng-controller="profileCtr" style="margin-top: 100px;">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-10">
+
+            <table class="table table-striped table-bordered">
+                <thead class="text-center">
+                    <th colspan="3">Thông tin chi tiết người dùng</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="width:30%">
+                            <span>Tên tài khoản:</span>
+                        </td>
+                        <td style="width:50%">
+                            <span ng-show="profileEditToggle[0] == 0">{{account.userData.name}}</span>
+                            <input style="width: 80%;" ng-show="profileEditToggle[0] == 1" ng-model="account.userData.name" type="text">
+                            <button style="width: 15%;" class="btn btn-primary text-center" ng-show="profileEditToggle[0] == 1" ng-click="saveChange('name',account.userData.name,0)">Save</button>
+                        </td>
+                        <td style="width:20%">
+                            <button ng-click="btnProfileEditToggle(0)" style="width: 100%;" class="btn btn-primary text-center">
+                                <span ng-show="profileEditToggle[0] == 0">Edit</span>
+                                <span ng-show="profileEditToggle[0] == 1">Cancel</span>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="width:30%">
+                            <span>Ngày sinh:</span>
+                        </td>
+                        <td style="width:50%">
+                            <span ng-show="profileEditToggle[1] == 0">{{account.userData.dob}}</span>
+                            <input style="width: 80%;" ng-show="profileEditToggle[1] == 1" ng-model="account.userData.dob" type="text">
+                            <button style="width: 15%;" class="btn btn-primary text-center" ng-show="profileEditToggle[1] == 1" ng-click="saveChange('dob',account.userData.dob,1)">Save</button>
+                        </td>
+                        <td style="width:20%">
+                            <button ng-click="btnProfileEditToggle(1)" style="width: 100%;" class="btn btn-primary text-center">
+                                <span ng-show="profileEditToggle[1] == 0">Edit</span>
+                                <span ng-show="profileEditToggle[1] == 1">Cancel</span>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="width:30%">
+                            <span>Email:</span>
+                        </td>
+                        <td style="width:50%">
+                            <span ng-show="profileEditToggle[2] == 0">{{account.userData.email}}</span>
+                            <input style="width: 80%;" ng-show="profileEditToggle[2] == 1" ng-model="account.userData.email" type="text">
+                            <button style="width: 15%;" class="btn btn-primary text-center" ng-show="profileEditToggle[2] == 1" ng-click="saveChange('email',account.userData.email,2)">Save</button>
+                        </td>
+                        <td style="width:20%">
+                            <button ng-click="btnProfileEditToggle(2)" style="width: 100%;" class="btn btn-primary text-center">
+                                <span ng-show="profileEditToggle[2] == 0">Edit</span>
+                                <span ng-show="profileEditToggle[2] == 1">Cancel</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-striped table-bordered">
+                <thead class="text-center">
+                    <th colspan="4">Thông tin chi tiết tài khoản</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tên tài khoản</td>
+                        <td>Mật khẩu</td>
+                        <td>Trạng thái</td>
+                        <td>Quyền tài khoản</td>
+                    </tr>
+                    <tr>
+                        <td>{{account.accountData.username}}</td>
+                        <td><button class="btn btn-primary">Thay đổi mật khẩu</button></td>
+                        <td>{{account.accountData.status}}</td>
+                        <td>{{account.accountData.mode}}</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-1"></div>
+    </div>
+</body>

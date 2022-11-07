@@ -1,0 +1,56 @@
+.sidebar
+{
+    min-height: 100vh;
+    color: white;
+    background-color: black;
+}
+
+.customHeader
+{
+    position: fixed;
+    top:0px;
+    width: 100%;
+    background-color: #563d7c;
+    color: #cbbde2;
+}
+
+.activeHeader
+{
+
+}
+
+.link:hover
+{
+    color:aqua;
+    text-decoration: none; 
+    background-color: none;
+}
+
+.box {
+    background: red;
+    
+}
+.center_block{
+    border-top-right-radius:0px;
+    border-bottom-right-radius:0px;
+    border-top-left-radius:0px;
+    border-bottom-left-radius:0px;
+}
+.left_block
+{
+    border-top-right-radius:0px;
+    border-bottom-right-radius:0px;
+}
+.right_block
+{
+    border-top-left-radius:0px;
+    border-bottom-left-radius:0px;
+}
+.own_button:hover
+{
+    background-color: #bdbdbd;
+}
+.own_button:active
+{
+    background-color: #676767;
+}
