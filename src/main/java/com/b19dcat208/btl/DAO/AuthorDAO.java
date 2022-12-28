@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.b19dcat208.btl.Entity.Author;
@@ -20,10 +21,10 @@ public class AuthorDAO {
     
     private static final String SELECT_ALL_AUTHOR  = "select * from authors";
     private static final String SELECT_AUTHOR_BY_ID= "select * from authors where id = ?";
-    private static final String INSERT_AUTHOR      = "insert into authors values(?,?)";
+    private static final String INSERT_AUTHOR      = "insert into authors values(?,?,?,?)";
     private static final String UPDATE_AUTHOR      = "update authors set name = ? where id = ?";
     private static final String DELETE_AUTHOR      = "delete from book where id=?";
-    private static final String LAST_AUTHOR_ID     = "select id from book order by id desc limit 1";
+    private static final String SELECT_ALL_AUTHOR_ID     = "select id from authors";
     public AuthorDAO(){}
 
 
@@ -92,5 +93,36 @@ public class AuthorDAO {
             e.printStackTrace();
         }
         return author;
+    }
+    public String createAuthorByName(String authorName)
+    {
+        String id = "";
+        try
+        {
+            ArrayList<Integer> lastID = new ArrayList<>();
+            Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_AUTHOR_ID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while(resultSet.next())
+            {
+                String tmp = resultSet.getString("id");
+                lastID.add(Integer.parseInt(tmp.substring(tmp.length()-3)));
+                System.out.print(Integer.parseInt(tmp.substring(tmp.length()-3))+" ");
+            }
+            Collections.sort(lastID);
+            preparedStatement = connection.prepareStatement(INSERT_AUTHOR);
+            id = String.format("AUTH%03d", lastID.get(lastID.size()-1)+1);
+            preparedStatement.setString(1, id);
+            preparedStatement.setString(2, authorName);
+            preparedStatement.setString(3, String.format("%s@gmail.com", id));
+            preparedStatement.setInt(4, 1);
+            preparedStatement.executeUpdate();
+            
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return id;
     }
 }

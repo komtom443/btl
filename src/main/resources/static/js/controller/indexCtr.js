@@ -51,18 +51,20 @@ ang.controller("headerCtr",function($scope,$http,$window,$cookies)
             console.log(resp);
             $scope.header.authors = resp.data;
         })
-        
     }
 
 })
 ang.controller("indexCtr",function($scope,$http,$window,$cookies)
 {
-    $scope.key= $cookies.get("sessionID");
+    $scope.key = $cookies.get("sessionID");
+    $scope.mode = $cookies.get("accountType");
+    $scope.passWorldConfirm = "";
     $scope.data = 
     {
         categories: undefined,
         authors: undefined,
-        books:undefined
+        books:undefined,
+        image:undefined,
     };
     $scope.searchKey=
     {
@@ -71,16 +73,61 @@ ang.controller("indexCtr",function($scope,$http,$window,$cookies)
         category:"",
     };
     $scope.searchBook = fnSearchBook;
+    $scope.delete = fnDelete;
+    $scope.deleteBookID = "";
+
+    $scope.toolBoxStyle = {}
+    $scope.toolBoxStyle['addButton'] = function()
+    {
+        return
+    }
+    $scope.reload = function()
+    {
+        init();
+    }
+    $scope.filterAreaClass = fnFilterAreaClass;
+    $scope.searchAreaClass = fnSearchAreaClass;
+    function fnFilterAreaClass()
+    {
+        if($scope.mode == 1)
+        {
+            return 'filter_area_admin'
+        }
+        return 'filter_area_user'
+    }
+    
+    function fnSearchAreaClass(value,value1)
+    {
+        return $('#searchBarDropdown').is( ":visible" );
+        if($('#searchBarDropdown').is(':visible'))
+        {
+            return value;
+        }
+        return value1
+    }
     init();
     function init()
     {
+        $scope.data = 
+        {
+            categories: undefined,
+            authors: undefined,
+            books:undefined,
+            image:undefined,
+        };
+        $scope.searchKey=
+        {
+            book:"",
+            author:"",
+            category:"",
+        };
         $http({
             method  : "GET",
             url     : "http://localhost:8080/api/book/",
         }).then(function(resp){
             console.log(resp,"Book");
             $scope.data.books = resp.data;
-        })
+        }) 
 
         $http({
             method  : "GET",
@@ -95,6 +142,21 @@ ang.controller("indexCtr",function($scope,$http,$window,$cookies)
             url     : "http://localhost:8080/api/author",
         }).then(function(resp){
             $scope.data.authors = resp.data;
+        })
+
+        $http({
+            method  : "GET",
+            url     : "http://localhost:8080/api/image",
+        }).then(function(resp){
+            $scope.data.image = resp.data;
+        })
+
+        $http({
+            method  : "GET",
+            url     : "http://localhost:8080/api/description",
+        }).then(function(resp){
+            $scope.data.description = resp.data;
+            console.log(resp.data);
         })
     }
 
@@ -117,5 +179,39 @@ ang.controller("indexCtr",function($scope,$http,$window,$cookies)
             }
         }
         return authorSearch;
+    }
+    $scope.warningModal = function(bookID)
+    {
+        $scope.passWorldConfirm = "";
+        $scope.deleteBookID = bookID;
+        console.log(bookID);
+        $("#deleteWarning").modal('show');
+    }
+    function fnDelete()
+    {
+        if($cookies.get("sessionID")== undefined || $cookies.get("sessionID")== "" || $cookies.get("accountType")!= 1)
+        {
+            alert("Bạn không có quyền xóa!!!");
+            return;
+        }
+        var req =
+        {
+            key: $cookies.get("sessionID"),
+            mode: $cookies.get("mode"),
+            passwd: $scope.passWorldConfirm,
+            bookID:$scope.deleteBookID,
+        }
+        $http({
+            method  : "POST",
+            url     : "http://localhost:8080/api/book/delete",
+            data:req
+        }).then(function(resp){
+            $("#deleteWarning").modal('hide');
+            init();
+        })
+    }
+    $scope.bookDetail = function(bookID)
+    {
+        $window.location.href = "/book/"+bookID;
     }
 })

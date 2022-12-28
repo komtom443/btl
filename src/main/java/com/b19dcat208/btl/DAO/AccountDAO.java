@@ -16,8 +16,8 @@ public class AccountDAO {
     private static final String SELECT_ALL_ACCOUNT  = "select id,username,status,mode from accounts";
     private static final String SELECT_ACCOUNT_BY_USERNAME= "select id,username,status,mode,userid from accounts where username=?";
     private static final String SELECT_ACCOUNT_MODE = "select id,username,status,mode from accounts where mode=?";
-    private static final String SELECT_ACCOUNT      = "select count(*) from accounts where username=? and passwd=?";
-    private static final String CHECK_ACCOUNT       = "select count(username) from accounts where username=?";
+    private static final String SELECT_ACCOUNT      = "select count(*),mode from accounts where username=? and passwd=?";
+    private static final String CHECK_ACCOUNT       = "select count(*) from accounts where username=?";
     private static final String INSERT_ACCOUNT      = "insert into accounts values(?,?,?,?,?,?)";
     private static final String UPDATE_ACCOUNT      = "update accounts set passwd=?,status=? where id=? and username=?";
     private static final String DELETE_ACCOUNT      = "delete from accounts where id=?";
@@ -87,12 +87,22 @@ public class AccountDAO {
         try
         {
             Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ACCOUNT);
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement("select userid from users order by userid desc limit 1");
+            ResultSet resultSet =preparedStatement.executeQuery();
+            resultSet.next();
+            String userID = String.format("USER%03d",Integer.parseInt(resultSet.getString("userid").substring(resultSet.getString("userid").length()-3))+1); 
+            preparedStatement = connection.prepareStatement("insert into users values(?,?,\"2001-12-15\",\"\")");
+            preparedStatement.setString(1, userID);
+            preparedStatement.setString(2, userID);
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement(INSERT_ACCOUNT);
             preparedStatement.setString(1, account.getId());
             preparedStatement.setString(2, account.getUsername());
             preparedStatement.setString(3, account.getPasswd());
             preparedStatement.setInt(4, 1);
             preparedStatement.setInt(5, 0);
+            preparedStatement.setString(6,userID);
             preparedStatement.executeUpdate();
             return true;
         }
@@ -102,7 +112,7 @@ public class AccountDAO {
         }
         return false;
     }
-    public boolean loginAccount(String username,String passwd)
+    public int loginAccount(String username,String passwd)
     {
         try
         {
@@ -116,12 +126,31 @@ public class AccountDAO {
             result = resultSet.getInt(1);
             if(result == 1)
             {
-                return true;
+                return resultSet.getInt("mode");
             } 
         }
         catch(Exception e)
         {
             e.printStackTrace();
+        }
+        return -1;
+    }
+    public boolean usernameValidate(String username)
+    {
+        try {
+            
+            Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(CHECK_ACCOUNT);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            System.out.println(resultSet.getInt(1));
+            if(resultSet.getInt(1) == 0)
+            {
+                return true;
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
         }
         return false;
     }

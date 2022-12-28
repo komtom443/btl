@@ -1,6 +1,5 @@
 package com.b19dcat208.btl.Entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Book implements Comparable<Book> {
@@ -11,6 +10,14 @@ public class Book implements Comparable<Book> {
     private int page;
     private String detail;
     private List<Author> authors;
+    public Book(String id, String name, Category category, String date, int page, String detail) {
+        this.id = id;
+        this.name = name;
+        this.category = category;
+        this.date = date;
+        this.page = page;
+        this.detail = detail;
+    }
     public Book(String id, String name, Category category, String date, int page, List<Author> authors) {
         this.id = id;
         this.name = name;
@@ -77,20 +84,30 @@ public class Book implements Comparable<Book> {
     public String toJson()
     {
         String authors="";
-        for(Author i : this.authors)
+        if(this.authors.size() != 0)
         {
-            authors += ","+i.toJson();
+            for(Author i : this.authors)
+            {
+                authors += ","+i.toJson();
+            }
         }
+        else
+        {
+            authors += ",";
+        }
+        
         authors = "["+authors.substring(1)+"]";
         return "{\"id\":\""+this.id+"\",\"name\":\""+this.name+"\",\"authors\":"+authors+",\"category\":"+this.category.toJson()+",\"date\":\""+this.date+"\",\"page\":"+this.page+"}";
     }
 
     @Override
     public int compareTo(Book o) {
+        System.out.println(o.getName());
         if(this.id.compareTo(o.getId()) > 0)
         {
             return 1;
         }
         return -1;
     }
+    
 }

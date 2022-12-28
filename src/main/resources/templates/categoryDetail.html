@@ -8,7 +8,10 @@
 
     <!-- Start CSS -->
     <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-    <link href="/css/index.css" rel="stylesheet">
+    <link href="/css/categoryDetail.css" rel="stylesheet">
+    <link href="/css/box.css" rel="stylesheet">
+    <link href="/css/table.css" rel="stylesheet">
+    <link href="/css/customButton.css" rel="stylesheet">
     <link href="/lib/fontawesome-4.7/css/font-awesome.css" rel="stylesheet">
     <!-- End CSS -->
 
@@ -25,91 +28,116 @@
     <!--                       Main                         -->
     <!-- -------------------------------------------------- -->
 
-    <div ng-controller="categoryCtr" style="margin-top: 75px;">
-        <div class="row">
+    <div ng-controller="categoryCtr" class="mainMenu">
+        <div>
             <span style="display: none;" th:text="${categoryID}" id="categoryID"></span>
             <span style="display: none;" th:text="${authorID}" id="authorID"></span>
             <span style="display: none;" th:text="${state}" id="state"></span>
-            <div class="col-lg-1">
-
+        </div>
+        <div class="flex h-100">
+            <div class="fl-2-8">
+                <div class="box box-white w-100 none-bottom top-box no-pad flex text-center" style="height: 75px;padding: .5rem;">
+                    <h1 class="w-100" ng-if="state == 1">THỂ LOẠI</h1>
+                    <h1 class="w-100" ng-if="state == 0">TÁC GIẢ</h1>
+                </div>
+                <div class="box box-white w-100 bottom-box box-p-1" style="height:calc(100vh - 182px)">
+                    <div class="box no-pad h-100 quickPick">
+                        <div ng-repeat="record in quickPick.data" class="quickPickRecord">
+                            <a href="/{{quickPick.name}}/{{record.id}}">{{$index+1}}, {{record.name}} ({{record.id}})</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-10">
-                <div class="card card-body" style="margin-bottom: 15px;">
+            <div class="fl-2-8">
+                <div class="box box-white w-100 none-bottom top-box" style="height: 75px;">
                     <h1 class="text-center" ng-if="state == 1">THỂ LOẠI: {{title.name.toUpperCase()}}</h1>
                     <h1 class="text-center" ng-if="state == 0">TÁC GIẢ: {{title.name.toUpperCase()}}</h1>
                 </div>
-                <div ng-if="error == 0">
-                    <div id="search-bar" class="input-group align-center" style="margin-bottom: 10px;">
-                        <label for="search-area" class="input-group-text left_block">
-                            <i class="fa fa-search" style="font-size: 1.5rem;" aria-hidden="true"></i>
-                        </label>
-                        <input id="search-area" ng-model="searchKey.book" type="text" class="form-control form-control-text left_block">
-                        <button class="input-group-text right_block own_button" data-bs-toggle="collapse" data-bs-target="#searchBarDropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-sort-desc" style="font-size: 1.5rem;" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="collapse" id="searchBarDropdown" style="margin-bottom: 10px;">
-                        <div class="card card-body">
-                            <div class="input-group" ng-if="state == 1">
-                                <label class="input-group-text" for="authorSelectOption">Tác giả</label>
-                                <select class="form-select" id="authorSelectOption" ng-model="searchKey.author">
-                                    <option selected value="">Tất cả</option>
-                                    <option ng-repeat="author in data.authors" value="{{author.id}}">{{author.name}}</option>
-                                </select>
-                            </div>
-
-                            <div class="input-group" style="margin-top:15px" ng-if="state == 0">
-                                <label class="input-group-text" for="categorySelectOption">Thể loại</label>
-                                <select class="form-select" id="categorySelectOption" ng-model="searchKey.category">
-                                    <option selected value="">Tất cả</option>
-                                    <option ng-repeat="category in data.categories" value="{{category.id}}">{{category.name}}</option>
-                                </select>
+                <div class="box box-white w-100 bottom-box box-p-1" style="height:calc(100vh - 182px)">
+                    <div ng-if="error == 0">
+                        <div id="search-bar" class="input-group align-center" style="margin-bottom: 1rem;">
+                            <label for="search-area" class="input-group-text left_block">
+                                <i class="fa fa-search" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                            </label>
+                            <input id="search-area" ng-model="searchKey.book" type="text" class="form-control form-control-text left_block">
+                            <button class="input-group-text right_block own_button" data-bs-toggle="collapse" data-bs-target="#searchBarDropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-sort-desc" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="collapse" id="searchBarDropdown" style="margin-bottom: 1rem;">
+                            <div class="card card-body">
+                                <div class="input-group" ng-if="state == 1">
+                                    <label class="input-group-text" for="authorSelectOption">Tác giả</label>
+                                    <select class="form-select" id="authorSelectOption" ng-model="searchKey.author">
+                                        <option selected value="">Tất cả</option>
+                                        <option ng-repeat="author in data.authors" value="{{author.id}}">{{author.name}}</option>
+                                    </select>
+                                </div>
+    
+                                <div class="input-group" style="margin-top:15px" ng-if="state == 0">
+                                    <label class="input-group-text" for="categorySelectOption">Thể loại</label>
+                                    <select class="form-select" id="categorySelectOption" ng-model="searchKey.category">
+                                        <option selected value="">Tất cả</option>
+                                        <option ng-repeat="category in data.categories" value="{{category.id}}">{{category.name}}</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
+                        
+                        <div class="table-wrap box box-white no-pad" style="margin-top: 10px; height: 100%;overflow-y: scroll;">
+                            <table>
+                                <thead>
+                                    <th style="width: 2%;text-align: center;">STT</th>
+                                    <th style="width: 20%;text-align: center;">Tên Sách</th>
+                                    <th style="width: 20%;text-align: center;">Tác giả</th>
+                                    <th style="width: 25%;text-align: center;">Ngày phát hành</th>
+                                    <th style="width: 5%;text-align: center;">Số trang</th>
+                                    <th style="width: 15%;text-align: center;">Ảnh minh họa</th>
+                                    <th style="width: 13%;" ng-if="key != undifined && key !=''"></th>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="book in data.books" ng-show="searchBook(book) == true && book">
+                                        <td class="text-center">{{$index+1}}</td>
+                                        <td>
+                                            <div>
+                                                {{book.name}} ({{book.id}})
+                                            </div>
+                                            <div>
+                                                <span style="font-weight: bold;">Thể loại: </span>
+                                                <a href="/category/{{book.category.id}}" class="categoryA">{{book.category.name}}</a>
+                                            </div>
+                                            <div>
+                                                <span style="font-weight: bold;">Ngày phát hành: </span>
+                                                {{book.date}}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div ng-repeat="author in book.authors">
+                                                <a class="center_div btn-custom" href="/author/{{author.id}}" style="margin-top: 5px;margin-bottom: 5px; display: block;">{{author.name}} ({{author.id}})</a>
+                                            </div>
+                                        </td>
+                                        <td>{{book.date}}</td>
+                                        <td class="text-center">{{book.page}}</td>
+                                        <td>
+                                            <img ng-src="{{data.image[book.id]}}">
+                                        </td>
+                                        <td ng-if="key != undifined && key !=''">
+                                            <div style="width:98%;margin-left:1%">
+                                                <button ng-click="bookDetail(book.id)" class="btn-custom">
+                                                    View
+                                                </button>
+                                            </div>
+                                            <button ng-if="mode == 1" class="btn-custom" style="margin-top: 5px;margin-bottom: 5px;" ng-click="warningModal(book.id)">Xóa</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    
-                    <table class="table table-bordered" >
-                        <thead class="text-center">
-                            <th style="width: 5%;">STT</th>
-                            <th style="width: 20%;">Tên Sách</th>
-                            <th style="width: 20%;">Tác giả</th>
-                            <th style="width: 10%;">Ngày phát hành</th>
-                            <th style="width: 5%;">Số trang</th>
-                            <th style="width: 25%;">Ảnh minh họa</th>
-                            <th style="width: 10%;" ng-if="key != undifined && key !=''"></th>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="book in data.books" ng-show="searchBook(book) == true">
-                                <td class="text-center">{{$index+1}}</td>
-                                <td>
-                                    {{book.name}} ({{book.id}})
-                                    <br>
-                                    <span style="font-weight: bold;">Thể loại: </span>
-                                    <a href="/category/{{book.category.id}}">{{book.category.name}}</a>
-                                </td>
-                                <td>
-                                    <a ng-repeat="author in book.authors" class="btn btn-primary" href="/author/{{author.id}}" style="margin-top: 5px;margin-bottom: 5px;">{{author.name}} ({{author.id}})</a>
-                                </td>
-                                <td>{{book.date}}</td>
-                                <td class="text-center">{{book.page}}</td>
-                                <td></td>
-                                <td ng-if="key != undifined && key !=''">
-                                    <a class="btn btn-primary" style="width:100%;margin-top: 5px;margin-bottom: 5px;" href="/book/{{book.id}}">View</a>
-                                    <a class="btn btn-primary" style="width:100%;margin-top: 5px;margin-bottom: 5px;" href="/book/{{book.id}}/delete">Delete</a>
-                                </td>
-                            </tr>
-                            <tr ng-if="key != undifined && key !=''">
-                                <button ng-click="createBook()" style="width: 100%;" class="btn btn-primary">Thêm mới</button>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div ng-if="error == 1">
+                        <h1 class="text-center">Không tìm thấy cuốn sách hợp lệ</h1>
+                    </div>
                 </div>
-                <div ng-if="error == 1">
-                    <h1 class="text-center">Không tìm thấy cuốn sách hợp lệ</h1>
-                </div>
-            </div>
-            <div class="col-lg-1">
-
             </div>
         </div>
     </div>
@@ -120,7 +148,7 @@
     <!-- -------------------------------------------------- -->
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark customHeader" ng-controller="headerCtr">
-        <a class="navbar-brand" href="/" style="margin-left: 50px;">Navbar</a>
+        <a class="navbar-brand" href="/" style="margin-left: 50px;">B19DCAT208</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerMenu" aria-controls="headerMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>

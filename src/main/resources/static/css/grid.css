@@ -1,0 +1,33 @@
+.grid-2
+{
+    display: flex;
+}
+.grid-2 .grid-child
+{
+    width: calc(50% - 8px);
+}
+.grid-2 .grid-child:last-child
+{
+    margin-left: 1rem;
+}
+.grid-100
+{
+    width: 100%;
+}
+.grid-3-stick
+{
+    display: flex;
+    
+}
+.grid-3-stick .grid-child
+{
+    width: 33%;
+}
+.grid-3-stick .grid-child:last-child
+{
+    margin-right:.5%;
+}
+.grid-3-stick .grid-child:first-child
+{
+    margin-left: .5% ;
+}

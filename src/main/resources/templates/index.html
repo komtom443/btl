@@ -9,16 +9,21 @@
     <!-- Start CSS -->
     <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
     <link href="/css/index.css" rel="stylesheet">
+    <link href="/css/table.css" rel="stylesheet">
+    <link href="/css/box.css" rel="stylesheet">
+    <link href="/css/customButton.css" rel="stylesheet">
     <link href="/lib/fontawesome-4.7/css/font-awesome.css" rel="stylesheet">
     <!-- End CSS -->
 
     <!-- Start JS -->
+    <script src="/lib/jquery/dist/jquery.js"></script>
     <script src="/lib/angular/angular.min.js"></script>
-    <script src="/js/lib/jquery.js"></script>
     <script src="/lib/angular/angular-cookies.js"></script>
     <script src="/js/controller/indexCtr.js"></script>
     <script src="/lib/@popperjs/core/dist/umd/popper.js"></script>
     <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+
+    
 </head>
 <body ng-app="myApp">
     <!-- -------------------------------------------------- -->
@@ -26,35 +31,33 @@
     <!-- -------------------------------------------------- -->
 
 
-    <div ng-controller="indexCtr" style="margin-top: 75px;">
-        <div class="row">
-            <div class="col-lg-1">
-
-            </div>
-            <div class="col-lg-10">
-                <div id="search-bar" class="input-group align-center" style="margin-bottom: 10px;">
-                    <label for="search-area" class="input-group-text left_block">
+    <div ng-controller="indexCtr" class="mainMenu">
+        
+        <div class="card card-body" style="width: 100%;height:calc(100vh - 70px)">
+            <div class="toolBar">
+                <div id="search-bar" class="input-group align-center {{searchAreaClass()}}">
+                    <label for="search-area" class="input-group-text top_left_block">
                         <i class="fa fa-search" style="font-size: 1.5rem;" aria-hidden="true"></i>
                     </label>
                     <input id="search-area" ng-model="searchKey.book" type="text" class="form-control form-control-text left_block">
                     <button class="input-group-text center_block own_button" data-bs-toggle="collapse" data-bs-target="#searchBarDropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-sort-desc" style="font-size: 1.5rem;" aria-hidden="true"></i>
                     </button>
-                    <button class="input-group-text right_block own_button" ng-click="random_all()">
-                        <i class="fa fa-plus" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                    <button class="input-group-text top_right_block own_button" ng-click="reload()">
+                        <i class="fa fa-refresh icon-reload" style="font-size: 1.5rem;" aria-hidden="true"></i>
                     </button>
                 </div>
-                <div class="collapse" id="searchBarDropdown" style="margin-bottom: 10px;">
-                    <div class="card card-body">
-
-                        <div class="input-group" style="margin-top:15px">
+                <div class="collapse" id="searchBarDropdown">
+                    <div class="card card-body {{filterAreaClass()}}">
+    
+                        <div class="input-group">
                             <label class="input-group-text" for="authorSelectOption">Tác giả</label>
                             <select class="form-select" id="authorSelectOption" ng-model="searchKey.author">
                                 <option selected value="">Tất cả</option>
                                 <option ng-repeat="author in data.authors" value="{{author.id}}">{{author.name}}</option>
                             </select>
                         </div>
-
+    
                         <div class="input-group" style="margin-top:15px">
                             <label class="input-group-text" for="categorySelectOption">Thể loại</label>
                             <select class="form-select" id="categorySelectOption" ng-model="searchKey.category">
@@ -64,44 +67,90 @@
                         </div>
                     </div>
                 </div>
-                <table class="table table-bordered" >
-                    <thead class="text-center">
-                        <th style="width: 5%;">STT</th>
-                        <th style="width: 20%;">Tên Sách</th>
-                        <th style="width: 20%;">Tác giả</th>
-                        <th style="width: 10%;">Ngày phát hành</th>
-                        <th style="width: 5%;">Số trang</th>
-                        <th style="width: 25%;">Ảnh minh họa</th>
-                        <th style="width: 10%;" ng-if="key != undifined && key !=''"></th>
+                <div class="input-group" ng-if="key != undifined && mode == 1 && key !=''">
+                    <a  class="input-group-text own_button bottom_block title text-center" style="width:100%"
+                        href="/book/new" >
+                        Thêm mới
+                    </a>
+                </div>
+            </div>
+            <div class="table-wrap" style="margin-top: 10px; height: 100%;overflow-y: scroll;">
+                <table>
+                    <thead>
+                        <th style="width: 2%;text-align: center;">STT</th>
+                        <th style="width: 20%;text-align: center;">Tên Sách</th>
+                        <th style="width: 20%;text-align: center;">Tác giả</th>
+                        <th style="width: 25%;text-align: center;">Mô tả</th>
+                        <th style="width: 5%;text-align: center;">Số trang</th>
+                        <th style="width: 15%;text-align: center;">Ảnh minh họa</th>
+                        <th style="width: 13%;" ng-if="key != undifined && key !=''"></th>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="book in data.books" ng-show="searchBook(book) == true">
+                        <tr ng-repeat="book in data.books" ng-show="searchBook(book) == true && book">
                             <td class="text-center">{{$index+1}}</td>
                             <td>
-                                {{book.name}} ({{book.id}})
-                                <br>
-                                <span style="font-weight: bold;">Thể loại: </span>
-                                <a href="/category/{{book.category.id}}">{{book.category.name}}</a>
+                                <div>
+                                    {{book.name}} ({{book.id}})
+                                </div>
+                                <div>
+                                    <span style="font-weight: bold;">Thể loại: </span>
+                                    <a href="/category/{{book.category.id}}" class="categoryA">{{book.category.name}}</a>
+                                </div>
+                                <div>
+                                    <span style="font-weight: bold;">Ngày phát hành: </span>
+                                    {{book.date}}
+                                </div>
                             </td>
                             <td>
-                                <a ng-repeat="author in book.authors" class="btn btn-primary" href="/author/{{author.id}}" style="margin-top: 5px;margin-bottom: 5px;">{{author.name}} ({{author.id}})</a>
+                                <a ng-repeat="author in book.authors" class="center_div btn-custom" href="/author/{{author.id}}" style="margin-top: 5px;margin-bottom: 5px;">{{author.name}} ({{author.id}})</a>
                             </td>
-                            <td>{{book.date}}</td>
+                            <td>
+                                <div>
+                                    <span ng-repeat="line in data.description[book.id]">
+                                        {{line}}
+                                    </span>
+                                </div>
+                            </td>
                             <td class="text-center">{{book.page}}</td>
-                            <td></td>
-                            <td ng-if="key != undifined && key !=''">
-                                <a class="btn btn-primary" style="width:100%;margin-top: 5px;margin-bottom: 5px;" href="/book/{{book.id}}">View</a>
-                                <a class="btn btn-primary" style="width:100%;margin-top: 5px;margin-bottom: 5px;" href="/book/{{book.id}}/delete">Delete</a>
+                            <td>
+                                <img ng-src="{{data.image[book.id]}}">
                             </td>
-                        </tr>
-                        <tr ng-if="key != undifined && key !=''">
-                            <button ng-click="createBook()" style="width: 100%;" class="btn btn-primary">Thêm mới</button>
+                            <td ng-if="key != undifined && key !=''">
+                                <div style="width:98%;margin-left:1%">
+                                    <button ng-click="bookDetail(book.id)" class="btn-custom">
+                                        View
+                                    </button>
+                                </div>
+                                <button ng-if="mode == 1" class="btn-custom" style="margin-top: 5px;margin-bottom: 5px;" ng-click="warningModal(book.id)">Xóa</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-1">
+        </div>
 
+        
+        <div class="modal fade" id="deleteWarning" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;text-align:center">Cảnh báo</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="width: 100%;">
+                            <i style="width: 100%; font-size: 5rem; color:red" class="fa fa-exclamation-triangle text-center warning_icon" aria-hidden="true"></i>
+                        </div>
+                        <div style="width:100%" class="text-center">
+                            <span style="font-weight: bold;color:red">MỘT KHI BẠN XÓA, DỮ LIỆU SẼ BIẾN MẤT MÃI MÃI !!!!!</span>
+                        </div>
+                        <input ng-model="passWorldConfirm" type="password" style="width: 90%;margin-left:5%" placeholder="Vui lòng nhập mật khẩu để tiếp tục">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-danger" ng-disabled="passWorldConfirm==''" ng-click="delete()">Xóa</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -112,7 +161,7 @@
     <!-- -------------------------------------------------- -->
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark customHeader" ng-controller="headerCtr">
-        <a class="navbar-brand" href="/" style="margin-left: 50px;">Navbar</a>
+        <a class="navbar-brand" href="/" style="margin-left: 50px;">B19DCAT208</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerMenu" aria-controls="headerMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -143,7 +192,7 @@
                 </li>
                 <li class="nav-item" ng-show="key=='' ||key== undefined">
                     <a class="nav-link" href="/login">Đăng nhập</a>
-                </li>
+                </li>  
                 <li class="nav-item dropdown" ng-if="key !='' &&key != undefined">
                     <a class="nav-link dropdown-toggle" id="headerAuthorMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Tài khoản

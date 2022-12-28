@@ -8,7 +8,14 @@
 
     <!-- Start CSS -->
     <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-    <link href="/css/index.css" rel="stylesheet">
+    <link href="/css/profile.css" rel="stylesheet">
+    <!-- <link href="/css/index.css" rel="stylesheet"> -->
+    <link href="/css/customButton.css" rel="stylesheet">
+    <link href="/css/box.css" rel="stylesheet">
+    <link href="/css/table.css" rel="stylesheet">
+    <link href="/css/grid.css" rel="stylesheet">
+    <link href="/lib/fontawesome-4.7/css/font-awesome.css" rel="stylesheet">
+    
     <!-- End CSS -->
 
     <!-- Start JS -->
@@ -20,12 +27,182 @@
     <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
 </head>
 <body ng-app="myApp">
+
+    <!-- -------------------------------------------------- -->
+    <!--            Sửa thông tin tài khoản                 -->
+    <!-- -------------------------------------------------- -->
+    <div ng-controller="profileCtr">
+        <div class="mainMenu profileTab">
+            <button ng-style="adminTab.currentTabStyle(tab.index)" ng-if="tab.visible == 1|| accountType == 1"
+                ng-click="adminTab.changeTab(tab.index)" ng-repeat="tab in adminTab.data">{{tab.name}}</button>
+        </div>
+        <div class="mainMenu body">
+            <div class="box box-white h-100 box-p-1 box-overflow">
+                <div ng-show="adminTab.currentTab == 1">
+                    <h2 style="text-align:center">Thông tin chủ tài khoản</h2>
+                    <div class="grid-2" style="margin-bottom: 16px;">
+                        <div class="grid-child">
+                            <div class="box top-box none-bottom">
+                                <span>Chủ tài khoản</span>
+                            </div>
+                            
+                            <div class="input-group" style="width:100%">
+                                <input class="form-control form-control-text" ng-disabled="profileEditToggle[0] == 0" ng-model="account.userData.name" type="text" style="border-top-left-radius:0rem ;">
+                                <button class="input-group-text right_block own_button" ng-hide="profileEditToggle[0] == 0"
+                                        ng-click="saveChange('name',account.userData.name,0,1)">
+                                        <i class="fa fa-floppy-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                </button>
+                                <button class="input-group-text box bottom-right-box" ng-click="btnProfileEditToggle(0)">
+                                    <i class="fa fa-window-close-o"  ng-show="profileEditToggle[0] == 1" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                    <i class="fa fa-pencil-square-o" ng-show="profileEditToggle[0] == 0" style="font-size: 1.5rem;width: 10%;" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="grid-child">
+                            <div class="box top-box none-bottom">
+                                <span>Ngày sinh</span>
+                            </div>
+                            <div class="input-group" style="width:100%">
+                                <input class="form-control form-control-text" ng-disabled="profileEditToggle[1] == 0" ng-model="account.userData.dob" type="date" style="border-top-left-radius:0rem ;">
+                                <button class="input-group-text right_block own_button" ng-hide="profileEditToggle[1] == 0"
+                                        ng-click="saveChange('dob',account.userData.dob,1,1)">
+                                        <i class="fa fa-floppy-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                </button>
+                                <button class="input-group-text box bottom-right-box" ng-click="btnProfileEditToggle(1)">
+                                    <i class="fa fa-window-close-o"  ng-show="profileEditToggle[1] == 1" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                    <i class="fa fa-pencil-square-o" ng-show="profileEditToggle[1] == 0" style="font-size: 1.5rem;width: 10%;" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-100">
+                        <div class="box top-box none-bottom">
+                            <span>Email</span>
+                        </div>
+                        <div class="input-group grid-100">
+                            <input class="form-control form-control-text" ng-disabled="profileEditToggle[2] == 0" ng-model="account.userData.email" type="text" style="border-top-left-radius:0rem ;">
+                            <button class="input-group-text right_block own_button" ng-hide="profileEditToggle[2] == 0"
+                                    ng-click="saveChange('email',account.userData.email,2,1)">
+                                    <i class="fa fa-floppy-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                            </button>
+                            <button class="input-group-text box bottom-right-box" ng-click="btnProfileEditToggle(2)">
+                                <i class="fa fa-window-close-o"  ng-show="profileEditToggle[2] == 1" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                <i class="fa fa-pencil-square-o" ng-show="profileEditToggle[2] == 0" style="font-size: 1.5rem;width: 10%;" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <h2 style="text-align:center">Thông tin tài khoản</h2>
+                    <div class="grid-3-stick ">
+                        <div class="grid-child">
+                            <div class="box top-left-box text-center">
+                                Tên đăng nhập
+                            </div>
+                            <div class="box bottom-left-box none-top text-center">
+                                {{account.accountData.username}}
+                            </div>
+                        </div>
+                        <div class="grid-child">
+                            <div class="box center-box none-left none-right text-center">
+                                Mật khẩu
+                            </div>
+                            <button class="box center-box none-top none-left none-right box-button">
+                                Đổi mật khẩu
+                            </button>
+                        </div>
+                        <div class="grid-child">
+                            <div class="box top-right-box text-center text-center">
+                                Loại tài khoản
+                            </div>
+                            <div class="box bottom-right-box none-top text-center">
+                                {{account.accountData.mode}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="adminTab.currentTab == 2" ng-if="accountType == 1">
+                    
+                </div>
+                <div ng-show="adminTab.currentTab == 3" ng-if="accountType == 1">
+                    Test 3
+                </div>
+                <div ng-show="adminTab.currentTab == 4">
+                    <div class="box top-box no-pad cartHistory">
+                        <table>
+                            <thead>
+                                <th style="width: 2%;text-align: center;">STT</th>
+                                <th style="width: 20%;text-align: center;">Tên Sách</th>
+                                <th style="width: 20%;text-align: center;">Thời gian mua</th>
+                                <th style="width: 25%;text-align: center;">Số lượng</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="i in cart">
+                                    <td class="text-center">{{$index+1}}</td>
+                                    <td>
+                                        <div>
+                                            <a href="/book/{{i.book.id}}" class="categoryA">{{i.book.name}} ({{i.book.id}})</a>
+                                        </div>
+                                        <div>
+                                            <span style="font-weight: bold;">Thể loại: </span>
+                                            <a href="/category/{{i.book.category.id}}" class="categoryA">{{i.book.category.id}}</a>
+                                        </div>
+                                        <div>
+                                            <span style="font-weight: bold;">Ngày phát hành: </span>
+                                            {{i.book.date}}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        {{i.date}}
+                                    </td>
+                                    <td>
+                                        <div style="display:flex">
+                                            <input type="number" ng-disabled="!i.isEdited" class="box box-white left-box" min="1" ng-model="i.value" style="width: 85%;height: 100%;font-size: 1.2rem;">
+                                            <button class="input-group-text box center-box none-left" ng-click="editCart(i,$index)" style="width: 7%;" ng-show="!i.isEdited">
+                                                <i class="fa fa-pencil-square-o" style="font-size: 1.5rem;width: 10%;" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="box right-box text-center none-left" style="width: 8%;" ng-click="deleteCart(i)" ng-show="!i.isEdited">
+                                                <i class="fa fa-trash-o" style="font-size: 1.2rem;" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="input-group-text box center-box none-left" ng-click="cartUpload(i)" style="width: 7%;" ng-show="i.isEdited">
+                                                <i class="fa fa-floppy-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="box right-box text-center none-left" style="width: 8%;" ng-click="editCart(i,$index)" ng-show="i.isEdited">
+                                                <i class="fa fa-window-close-o"  style="font-size: 1.5rem" aria-hidden="true"></i>
+                                            </button>
+                                            
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- <div class="cartRecord" ng-repeat="i in cart">
+                            <div class="box left-box" style="width: 60%;">
+                                <span>{{i.book.name}}</span>
+                            </div>
+                            <div class="box center-box none-left" style="width: 20%;">
+                                <span>{{i.date}}</span>
+                            </div>
+                            <input type="number" class="box center-box none-left" min="1" ng-model="i.value" style="width: 15%;">
+                            <button class="box right-box text-center none-left" style="width: 5%;" ng-click="deleteCart(i)">
+                                <i class="fa fa-trash-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                            </button>
+                        </div> -->
+                        <span ng-show="cart.length == 0">Bạn chưa đặt đơn hàng nào</span>
+                    </div>
+                    <div class="cartSum box bottom-box none-top">
+                        <button class="own_button box">Thanh toán</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- -------------------------------------------------- -->
     <!--                       Header                       -->
     <!-- -------------------------------------------------- -->
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark customHeader" ng-controller="headerCtr">
-        <a class="navbar-brand" href="/" style="margin-left: 50px;">Navbar</a>
+        <a class="navbar-brand" href="/" style="margin-left: 50px;">B19DCAT208</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerMenu" aria-controls="headerMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -57,101 +234,16 @@
                 <li class="nav-item" ng-show="key=='' ||key== undefined">
                     <a class="nav-link" href="/login">Đăng nhập</a>
                 </li>
-                <li class="nav-item" ng-hide="key=='' ||key== undefined">
-                    <a class="nav-link" href="/profile">Trang các nhân</a>
+                <li class="nav-item dropdown" ng-if="key !='' &&key != undefined">
+                    <a class="nav-link dropdown-toggle" id="headerAuthorMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Tài khoản
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="headerAuthorMenu">
+                        <a class="dropdown-item" href="/profile">Trang cá nhân</a>
+                        <a class="dropdown-item" href="/#" ng-click="logout()">Đăng xuất</a>
+                    </div>
                 </li>
             </ul>
         </div>
     </nav>
-
-
-    <!-- -------------------------------------------------- -->
-    <!--            Sửa thông tin tài khoản                 -->
-    <!-- -------------------------------------------------- -->
-
-    <div class="row" ng-controller="profileCtr" style="margin-top: 100px;">
-        <div class="col-lg-1"></div>
-        <div class="col-lg-10">
-
-            <table class="table table-striped table-bordered">
-                <thead class="text-center">
-                    <th colspan="3">Thông tin chi tiết người dùng</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="width:30%">
-                            <span>Tên tài khoản:</span>
-                        </td>
-                        <td style="width:50%">
-                            <span ng-show="profileEditToggle[0] == 0">{{account.userData.name}}</span>
-                            <input style="width: 80%;" ng-show="profileEditToggle[0] == 1" ng-model="account.userData.name" type="text">
-                            <button style="width: 15%;" class="btn btn-primary text-center" ng-show="profileEditToggle[0] == 1" ng-click="saveChange('name',account.userData.name,0)">Save</button>
-                        </td>
-                        <td style="width:20%">
-                            <button ng-click="btnProfileEditToggle(0)" style="width: 100%;" class="btn btn-primary text-center">
-                                <span ng-show="profileEditToggle[0] == 0">Edit</span>
-                                <span ng-show="profileEditToggle[0] == 1">Cancel</span>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width:30%">
-                            <span>Ngày sinh:</span>
-                        </td>
-                        <td style="width:50%">
-                            <span ng-show="profileEditToggle[1] == 0">{{account.userData.dob}}</span>
-                            <input style="width: 80%;" ng-show="profileEditToggle[1] == 1" ng-model="account.userData.dob" type="text">
-                            <button style="width: 15%;" class="btn btn-primary text-center" ng-show="profileEditToggle[1] == 1" ng-click="saveChange('dob',account.userData.dob,1)">Save</button>
-                        </td>
-                        <td style="width:20%">
-                            <button ng-click="btnProfileEditToggle(1)" style="width: 100%;" class="btn btn-primary text-center">
-                                <span ng-show="profileEditToggle[1] == 0">Edit</span>
-                                <span ng-show="profileEditToggle[1] == 1">Cancel</span>
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style="width:30%">
-                            <span>Email:</span>
-                        </td>
-                        <td style="width:50%">
-                            <span ng-show="profileEditToggle[2] == 0">{{account.userData.email}}</span>
-                            <input style="width: 80%;" ng-show="profileEditToggle[2] == 1" ng-model="account.userData.email" type="text">
-                            <button style="width: 15%;" class="btn btn-primary text-center" ng-show="profileEditToggle[2] == 1" ng-click="saveChange('email',account.userData.email,2)">Save</button>
-                        </td>
-                        <td style="width:20%">
-                            <button ng-click="btnProfileEditToggle(2)" style="width: 100%;" class="btn btn-primary text-center">
-                                <span ng-show="profileEditToggle[2] == 0">Edit</span>
-                                <span ng-show="profileEditToggle[2] == 1">Cancel</span>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <table class="table table-striped table-bordered">
-                <thead class="text-center">
-                    <th colspan="4">Thông tin chi tiết tài khoản</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Tên tài khoản</td>
-                        <td>Mật khẩu</td>
-                        <td>Trạng thái</td>
-                        <td>Quyền tài khoản</td>
-                    </tr>
-                    <tr>
-                        <td>{{account.accountData.username}}</td>
-                        <td><button class="btn btn-primary">Thay đổi mật khẩu</button></td>
-                        <td>{{account.accountData.status}}</td>
-                        <td>{{account.accountData.mode}}</td>
-                    </tr>
-                    
-                </tbody>
-            </table>
-        </div>
-        <div class="col-lg-1"></div>
-    </div>
 </body>

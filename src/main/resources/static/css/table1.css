@@ -1,0 +1,29 @@
+table
+{
+    border: transparent;
+    
+}
+table,table th,table tr,table td
+{
+    border-collapse: separate;
+    border-spacing: 0; 
+}
+table tr:first-child th
+{
+    border-right: 1px solid rgba(0,0,0,0.18);
+    text-align: center;
+    color: black;
+    font-size: 2rem;
+}
+table td .ratingDisplay
+{
+    height:26px;
+    border-bottom: 1px dashed rgba(0,0,0,.18);
+    width: 100%;
+    display: flex;
+    font-weight: bold;
+}
+table td .ratingDisplay:first-child
+{
+    border-top: 1px dashed rgba(0,0,0,.18);
+}

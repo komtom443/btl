@@ -18,6 +18,7 @@ public class BookAuthorDAO {
     private static final String SELECT_BOOK_BY_AUTHOR_ID = "select bookid from book_author where authorid = ?";
     private static final String SELECT_AUTHOR_BY_BOOK_ID = "select authorid from book_author where bookid = ?";
     private static final String CREATE_NEW = "insert into book_author values(?,?,?)";
+    private static final String DELETE_BY_BOOK_ID = "delete from book_author where bookid = ?";
     private static final String SELECT_LAST_ID = "select id from book_author order by id desc limit 1";
     private static final String SELECT_AUTHOR_BOOK_NUMBER = "select count(bookid) from book_author where authorid = ?";
     
@@ -71,6 +72,7 @@ public class BookAuthorDAO {
         List<String> books = new ArrayList<>();
         try
         {
+            System.out.println("|author_id: "+authorID+"|");
             Connection connection = getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BOOK_BY_AUTHOR_ID);
             preparedStatement.setString(1, authorID);
@@ -106,5 +108,53 @@ public class BookAuthorDAO {
             e.printStackTrace();
         }
         return num;
+    }
+
+    public void updateAuthor(String authorIDList,String bookID)
+    {
+        
+        try
+        {
+            Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_BOOK_ID);
+            preparedStatement.setString(1, bookID);
+            preparedStatement.executeUpdate();
+            preparedStatement = connection.prepareStatement(SELECT_LAST_ID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            int lastID = resultSet.getInt("id");
+            System.out.println(lastID);
+            preparedStatement = connection.prepareStatement(CREATE_NEW);
+            preparedStatement.setString(2, bookID);
+            for(String i : authorIDList.split(";"))
+            {
+                if(!i.equals(""))
+                {
+                    preparedStatement.setInt(1, ++lastID);
+                    preparedStatement.setString(3, i);
+                    preparedStatement.executeUpdate();
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void deleteBook(String bookID)
+    {
+        try
+        {
+            Connection connection = getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BY_BOOK_ID);
+            preparedStatement.setString(1, bookID);
+            preparedStatement.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

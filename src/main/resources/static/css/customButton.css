@@ -1,0 +1,32 @@
+.btn-custom
+{
+    width: 100%;
+    height: 50px;
+    line-height: 1.5;
+    text-align: center;
+    border-radius: .375rem;
+    color: #212529;
+    background-color: #e9ecef;
+    border: rgba(0,0,0,0.18) 1px solid !important;
+    transition: .1s;
+    padding: var(--bs-btn-padding-y) var(--bs-btn-padding-x);
+}
+.btn-custom:hover
+{
+    color: #212529;
+    background-color: #959595;
+    border: rgba(0,0,0,0.18) 1px solid !important;
+    font-weight: bold;
+}
+.btn-custom:focus
+{
+    color: #212529;
+    background-color: #676767;
+    border: rgba(0,0,0,0.18) 1px solid !important;
+    font-weight: bold;
+}
+
+.btn-custom.square
+{
+    border-radius: 0px;
+}

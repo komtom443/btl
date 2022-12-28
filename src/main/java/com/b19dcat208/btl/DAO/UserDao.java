@@ -39,7 +39,11 @@ public class UserDao {
         }
         return connection;
     }
-
+    public String getUserName(String username)
+    {
+        AccountDAO accountDAO = new AccountDAO();
+        return getUser(accountDAO.getAccountByUsername(username).getUserID()).getName();
+    }
     public User getUser(String useriD)
     {
         User user = new User();

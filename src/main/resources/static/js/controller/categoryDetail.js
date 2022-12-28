@@ -5,6 +5,7 @@ ang.controller("categoryCtr",function($scope,$http,$window,$cookies)
     $scope.key= $cookies.get("sessionID");
     $scope.state = parseInt(document.getElementById("state").innerHTML);
     $scope.error = 0;
+    $scope.quickPick = {name:'',data:[]};
     $scope.data = 
     {
         categories: undefined,
@@ -27,6 +28,10 @@ ang.controller("categoryCtr",function($scope,$http,$window,$cookies)
             url     : "http://localhost:8080/api/category",
         }).then(function(resp){
             $scope.data.categories = resp.data;
+            if($scope.state == 1){
+                $scope.quickPick.name = 'category'
+                $scope.quickPick.data = $scope.data.categories
+            }
         })
 
 
@@ -35,11 +40,16 @@ ang.controller("categoryCtr",function($scope,$http,$window,$cookies)
             url     : "http://localhost:8080/api/author",
         }).then(function(resp){
             $scope.data.authors = resp.data;
+            if($scope.state == 0){
+                $scope.quickPick.name = 'author'
+                $scope.quickPick.data = $scope.data.authors
+            }
         })
 
 
         if($scope.state == 1)
         {
+            
             $scope.searchKey.category = document.getElementById("categoryID").innerHTML;
             $http({
                 method  : "GET",

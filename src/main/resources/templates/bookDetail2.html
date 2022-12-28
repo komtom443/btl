@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Start CSS -->
+    <link href="/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/index.css" rel="stylesheet">
+    <link href="/lib/fontawesome-4.7/css/font-awesome.css" rel="stylesheet">
+    <!-- End CSS -->
+
+    <!-- Start JS -->
+    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="/lib/angular/angular.min.js"></script>
+    <script src="/lib/angular/angular-cookies.js"></script>
+    <script src="/js/controller/bookDetail.js"></script>
+    <script src="/lib/@popperjs/core/dist/umd/popper.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+    
+</head>
+<body ng-app="myApp">
+
+    <div ng-controller="bookDetailCtr" style="margin-top: 75px;">
+        <span th:text="${mode}" id="mode"></span>
+        <span th:text="${bookID}" id="bookID"></span>
+        <div class="row">
+            <div class="col-lg-1">
+
+            </div>
+            <!--                       Thông tin sách                       -->
+            <div class="col-lg-10 card-body">
+                <div class="card card-body">
+                    
+                    <div>
+                        <div class="input-group align-center " style="margin-bottom: 15px;">
+                            <button class="input-group-text own_button title" style="width:100%"
+                                data-bs-toggle="collapse" data-bs-target="#imageUI">
+                                Ảnh minh họa:
+                            </button>
+                        </div>
+                        <div class="collapse" id="imageUI" style="margin-bottom: 15px">
+                            <div class="card card-body">
+                                <div ng-if="accountType == 1" class="input-group mb-3">
+                                    <input type="file" class="form-control"  onchange="angular.element(this).scope().chooseImage(event)" accept="image/*">
+                                    <button class="input-group-text own_button title" ng-click="upload['image']()"> Upload</button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-1"></div>
+                                    <div class="col-lg-10">
+                                        <img id="inputGroupFile02" src="{{imageURL.editData}}"
+                                            height="500px">
+                                    </div>
+                                    <div class="col-lg-1"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group align-center" style="margin-bottom: 15px;">
+                        <label for="search-area" class="input-group-text left_block title">
+                            Tiêu đề sách:
+                        </label>
+                        <input ng-disabled="bookEdit[0] == 0" id="search-area" ng-model="bookData.editData.name" type="text" class="form-control form-control-text left_block">
+                        <button ng-if="accountType == 1" class="input-group-text right_block own_button" ng-show="bookEdit[0] == 1" ng-disabled="bookData.editData.name==''" ng-click="upload['attribute']('title',bookData.editData.name,0)">
+                            <i class="fa fa-floppy-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                        </button>
+                        <button ng-if="accountType == 1" class="input-group-text right_block own_button" ng-click="editModeEnable(0)">
+                            <i class="fa fa-window-close-o"  ng-show="bookEdit[0] == 1" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                            <i class="fa fa-pencil-square-o" ng-show="bookEdit[0] == 0" style="font-size: 1.5rem;width: 10%;" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <span style=" font-weight:bold;color:red" ng-show="bookData.editData.name==''">Vui lòng chọn 1 thể loại</span>
+
+
+                    <div class="input-group align-center" style="margin-bottom: 15px;">
+                        <label for="search-area" class="input-group-text left_block title">
+                            Ngày xuất bản
+                        </label>
+                        <input ng-disabled="bookEdit[1] == 0" ng-model="bookData.editData.date" type="date" class="form-control form-control-text left_block">
+                        <button ng-if="accountType == 1" class="input-group-text right_block own_button" ng-show="bookEdit[1] == 1" ng-click="upload['attribute']('date',bookData.editData.date,1)">
+                            <i class="fa fa-floppy-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                        </button>
+                        <button ng-if="accountType == 1" class="input-group-text right_block own_button" ng-click="editModeEnable(1)">
+                            <i class="fa fa-window-close-o"  ng-show="bookEdit[1] == 1" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                            <i class="fa fa-pencil-square-o" ng-show="bookEdit[1] == 0" style="font-size: 1.5rem;width: 10%;" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group align-center" style="margin-bottom: 15px;">
+                        <label for="search-area" class="input-group-text left_block title" style="width:15%">
+                            Số trang
+                        </label>
+                        <input ng-disabled="bookEdit[2] == 0" id="search-area" min="1" ng-model="bookData.editData.page" type="number" class="form-control form-control-text left_block">
+                        <button ng-if="accountType == 1" class="input-group-text right_block own_button" ng-show="bookEdit[2] == 1" ng-click="upload['attribute']('page',bookData.editData.page,2)">
+                            <i class="fa fa-floppy-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                        </button>
+                        <button ng-if="accountType == 1" class="input-group-text right_block own_button" ng-click="editModeEnable(2)">
+                            <i class="fa fa-window-close-o"  ng-show="bookEdit[2] == 1" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                            <i class="fa fa-pencil-square-o" ng-show="bookEdit[2] == 0" style="font-size: 1.5rem;width: 10%;" aria-hidden="true"></i>
+                        </button>
+                    </div>
+
+                    <div class="input-group align-center" style="margin-bottom: 15px;">
+                        <label for="search-area" class="input-group-text left_block title">
+                            Thể loại:
+                        </label>
+                        <select class="form-select" id="inputGroupSelect01" ng-model="bookData.editData.category.id" ng-disabled="bookEdit[4] == 0">
+                            <option value="{{category.id}}" ng-repeat="category in categories">{{category.name}}</option>
+                        </select>
+                        <button ng-if="accountType == 1" class="input-group-text right_block own_button" ng-show="bookEdit[4] == 1" ng-click="editCategoryEnable(0)">
+                            <i class="fa fa-floppy-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                        </button>
+                        <button ng-if="accountType == 1" class="input-group-text right_block own_button" ng-click="editCategoryEnable(1)">
+                            <i class="fa fa-window-close-o"  ng-show="bookEdit[4] == 1" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                            <i class="fa fa-pencil-square-o" ng-show="bookEdit[4] == 0" style="font-size: 1.5rem;width: 10%;" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <span style=" font-weight:bold;color:red" ng-show="bookEditError['noCategory'] == 1">Vui lòng chọn 1 thể loại</span>
+                    <div>
+                        <div class="input-group align-center " style="margin-bottom: 15px;">
+                            <button class="input-group-text own_button title" style="width:100%"
+                                data-bs-toggle="collapse" data-bs-target="#authorUI">
+                                Tác giả
+                            </button>
+                        </div>
+                        <div class="collapse" id="authorUI" style="margin-bottom: 15px">
+                            <div class="card card-body">
+                                <div class="row">
+                                    <div class="col-1"></div>
+                                    <div class="col-10">
+                                        <div class="collapse" id="editAuthorUIOff">
+                                            <div class="input-group align-center" style="margin-bottom: 15px;" ng-repeat="author in bookData.currentData.authors">
+                                                <label for="search-area" class="input-group-text left_block title" style="width:5%">
+                                                    {{$index + 1}}
+                                                </label>
+                                                <label for="search-area" class="input-group-text left_block title">
+                                                    Tác giả:
+                                                </label>
+                                                <input disabled id="search-area" ng-model="author.name" type="text" class="form-control form-control-text left_block">
+                                                <button class="input-group-text right_block own_button" ng-click="btnAuthorDetail(author.id)">
+                                                    <i class="fa fa-info-circle" style="font-size: 1.5rem;width: 10%;" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div ng-if="accountType == 1" class="input-group align-center" style="margin-bottom: 15px;">
+                                            <input ng-disabled="bookEdit[3] == 0" type="text" ng-model="editAuthorSearch.value" class="form-control form-control-text left_block">
+                                            <button class="input-group-text right_block own_button" ng-hide="bookEdit[3] == 0"
+                                                ng-click="btnShowAuthorList()">
+                                                <i class="fa fa-sort-desc" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="input-group-text right_block own_button" ng-hide="bookEdit[3] == 0"
+                                                ng-click="btnSaveAuthor()">
+                                                <i class="fa fa-floppy-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="input-group-text right_block own_button" ng-click="btnEditAuthor()">
+                                                <i class="fa fa-window-close-o"  ng-show="bookEdit[3] == 1" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                                <i class="fa fa-pencil-square-o" ng-show="bookEdit[3] == 0" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        <div style="margin-bottom: 15px;">
+                                            <span style=" font-weight:bold;color:red" ng-hide="bookEditError['blankNewAuthor'] == undefined || bookEditError['blankNewAuthor'] == 0">Vui lòng không để trống khi thêm tác giả mới</span>
+                                            <span style=" font-weight:bold;color:red" ng-hide="bookEditError['noAuthor'] == undefined || bookEditError['noAuthor'] == 0">Vui lòng chọn ít nhất một tác giả</span>
+                                        </div>
+                                        
+                                        <div ng-if="accountType == 1"  class="collapse" id="editAuthorUIOn">
+                                            <div class="card card-body">
+                                                <div class="editAuthorList">
+                                                    <div class="input-group" ng-click="addTempAuthor()">
+                                                        <input type="text" class="form-control" value="Thêm tác giả mới" aria-label="Text input with checkbox" disabled>
+                                                    </div>
+                                                    <div class="input-group" ng-repeat="author in authors.data" ng-show="editAuthorSearch.search(author.name)">
+                                                        <div class="input-group-text">
+                                                            <input class="form-check-input mt-0" type="checkbox" ng-model="authors.authorID[author.id]" aria-label="Checkbox for following text input">
+                                                        </div>
+                                                        
+                                                        <input type="text" class="form-control" value="{{author.name}} {{authors.authorID[author.id]}}" aria-label="Text input with checkbox" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-1"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ratingBox" style="margin-bottom: 15px;">
+                        <span class="ratingTitle"> Đánh giá</span>
+                        <div class="ratingScore">
+                            
+                        </div>
+                    </div>
+    
+                    <div>
+                        <div class="input-group align-center " style="margin-bottom: 15px;">
+                            <button class="form-control own_button title" style="background-color: #e9ecef;"
+                                data-bs-toggle="collapse" data-bs-target="#describeUI">
+                                Mô tả:
+                            </button>
+                            <button ng-if="accountType == 1" class="input-group-text right_block own_button" ng-hide="bookEdit[5] == 0"
+                                ng-click="upload['descprition']()">
+                                <i class="fa fa-floppy-o" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                            </button>
+                            <button ng-if="accountType == 1" class="input-group-text right_block own_button" ng-click="editModeEnable(5)">
+                                <i class="fa fa-window-close-o"  ng-show="bookEdit[5] == 1" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                <i class="fa fa-pencil-square-o" ng-show="bookEdit[5] == 0" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="collapse" id="describeUI" style="margin-bottom: 15px">
+                            <div class="card card-body">
+                                <textarea type="text" ng-disabled="bookEdit[5] == 0" ng-model="bookData.editData.descprition" class="descriptionTextArea" style="height:300px"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-body" ng-if="mode=='1'" >
+                        <div class="center_div">
+                            <div class="input-group align-center ">
+                                <button class="own_button_left own_button" style="width:150px;"
+                                    ng-click="create()">
+                                    Tạo mới
+                                </button>
+                                <button class="own_button_right own_button" style="width:150px">
+                                    Hủy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-group align-center " style="margin-bottom: 15px;">
+                        <button class="input-group-text own_button title" style="width:100%"
+                            data-bs-toggle="collapse" data-bs-target="#commandUI">
+                            Bình luận:
+                        </button>
+                    </div>
+                    <div class="collapse" id="commandUI" style="margin-bottom: 15px">
+                        <div class="card card-body">
+                            <span style="font-weight:bold;margin-left: 10px;">
+                                Bình luận của bạn:</span>
+                            <textarea id="commentBox" type="text" ng-model="myComment" class="descriptionTextArea" style="height:200px"></textarea>
+                            <div class="card card-body" ng-repeat="comment in comments" style="margin-top: 15px;">
+                                <span style="font-weight: bold;">{{comment.name}}</span>
+                                <span> ({{comment.date}})</span>
+                                <div ng-repeat="data in comment.data">
+                                    <span>{{data}}</span><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="col-lg-1">
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- -------------------------------------------------- -->
+    <!--                       Header                       -->
+    <!-- -------------------------------------------------- -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark customHeader" ng-controller="headerCtr">
+        <a class="navbar-brand" href="/" style="margin-left: 50px;">B19DCAT208</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerMenu" aria-controls="headerMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="headerMenu">
+            <ul class="navbar-nav" >
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Trang chủ</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="headerCategoryMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Thể loại
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="headerCategoryMenu">
+                        <a class="dropdown-item" href="/category">Tất cả</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" ng-repeat="cate in header.categories" href="/category/{{cate.id}}">{{cate.name}} ({{cate.count}})</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="headerAuthorMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Tác giả
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="headerAuthorMenu">
+                        <a class="dropdown-item" href="/author">Tất cả</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" ng-repeat="auth in header.authors" href="/author/{{auth.id}}">{{auth.name}} ({{auth.count}})</a>
+                    </div>
+                </li>
+                <li class="nav-item" ng-show="key=='' ||key== undefined">
+                    <a class="nav-link" href="/login">Đăng nhập</a>
+                </li>
+                <li class="nav-item dropdown" ng-if="key !='' &&key != undefined">
+                    <a class="nav-link dropdown-toggle" id="headerAuthorMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Tài khoản
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="headerAuthorMenu">
+                        <a class="dropdown-item" href="/profile">Trang cá nhân</a>
+                        <a class="dropdown-item" href="/#" ng-click="logout()">Đăng xuất</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</body>
